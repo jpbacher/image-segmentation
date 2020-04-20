@@ -28,13 +28,16 @@ def split_to_tensors(dir_path):
     """
     file_names = os.listdir(dir_path)
     img_path = [os.path.join(dir_path, f_name) for f_name in file_names]
+    tensor_frames, tensor_masks = [], []
     for img in img_path:
         img_str = tf.io.read_file(img)
         img_decode = tf.image.decode_jpeg(img_str)
         # ensure image is correct size
         out = tf.image.resize(img_decode, size=(256, 512))
-        # keep the height and channels
-        frames = out[:, :256, :]
-        masks = out[:, 256:, :]
-        return frames, masks
+        # split width, keep height and channels
+        frame = out[:, :256, :]
+        tensor_frames.append(frame)
+        mask = out[:, 256:, :]
+        tensor_masks.append(mask)
+    return tensor_frames, tensor_masks
 
