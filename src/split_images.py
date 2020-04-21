@@ -20,24 +20,17 @@ def split_to_arrays(dir_path):
     return frames, masks
 
 
-def split_to_tensors(dir_path):
-    """
-    Split the images into 2 tensors, the actual & image and masks
-    :param dir_path: directory path of images
-    :return: 2 tensors
-    """
-    file_names = os.listdir(dir_path)
-    img_path = [os.path.join(dir_path, f_name) for f_name in file_names]
-    tensor_frames, tensor_masks = [], []
-    for img in img_path:
-        img_str = tf.io.read_file(img)
-        img_decode = tf.image.decode_jpeg(img_str)
-        # ensure image is correct size
-        out = tf.image.resize(img_decode, size=(256, 512))
-        # split width, keep height and channels
-        frame = out[:, :256, :]
-        tensor_frames.append(frame)
-        mask = out[:, 256:, :]
-        tensor_masks.append(mask)
-    return tensor_frames, tensor_masks
+def get_tensor(filename):
+    img_string = tf.io.read_file(filename)
+    img_decode = tf.image.decode_jpeg(img_string)
+    img = tf.image.convert_image_dtype(img_decode, tf.float32)
+    img = tf.image.resize(img, size=(256, 512))
+    return img
 
+
+def get_frame(tensor, width=256):
+    return tensor[:, :width, :]
+
+
+def get_mask(tensor, width=256):
+    return tensor[:, width:, :]
