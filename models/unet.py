@@ -1,5 +1,3 @@
-import tensorflow as tf
-# import tensorflow.keras
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import (Input, Conv2D, MaxPooling2D, Conv2DTranspose, concatenate)
 
