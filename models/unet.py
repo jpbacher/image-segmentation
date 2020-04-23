@@ -2,9 +2,9 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import (Input, Conv2D, MaxPooling2D, Conv2DTranspose, concatenate)
 
 
-def Unet(img_col, img_row, batch_size):
+def Unet(input_size=(256, 256, 3), batch_size=32, pretrained_weights=None):
 
-    inputs = Input(shape=(img_col, img_row, 3), batch_size=batch_size)
+    inputs = Input(shape=input_size, batch_size=batch_size)
     conv1 = Conv2D(64, (3, 3), padding='same', activation='relu')(inputs)
     conv1 = Conv2D(64, (3, 3), padding='same', activation='relu')(conv1)
     pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
@@ -46,4 +46,8 @@ def Unet(img_col, img_row, batch_size):
     conv10 = Conv2D(2, (1, 1), activation='sigmoid')(conv9)
 
     model = Model(inputs=[inputs], outputs=[conv10])
+
+    if pretrained_weights:
+        model.load_weights(filepath=pretrained_weights)
+
     return model
