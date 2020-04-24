@@ -2,7 +2,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import (Input, Conv2D, MaxPooling2D, Conv2DTranspose, concatenate)
 
 
-def Unet(input_size=(256, 256, 3), batch_size=8, pretrained_weights=None):
+def Unet(input_size=(256, 256, 3), batch_size=None, pretrained_weights=None):
 
     inputs = Input(shape=input_size, batch_size=batch_size)
     conv1 = Conv2D(32, (3, 3), padding='same', activation='relu')(inputs)
