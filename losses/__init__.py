@@ -10,7 +10,7 @@ def dice_coeff(y_true, y_pred, smooth=1.0):
     return dice
 
 
-def dice_loss_bce(y_true, y_pred):
+def dice_bce_loss(y_true, y_pred):
     bce = BinaryCrossentropy()
-    dice_bce = 1 + bce(y_true, y_pred) - dice_coeff(y_true, y_pred)
-    return dice_bce
+    loss = 1 + bce(y_true, y_pred) - dice_coeff(y_true, y_pred)
+    return loss
