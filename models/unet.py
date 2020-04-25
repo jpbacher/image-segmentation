@@ -1,11 +1,12 @@
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import (Input, Conv2D, MaxPooling2D, Conv2DTranspose, concatenate)
+from tensorflow.keras.layers import Input, BatchNormalization, Conv2D, MaxPooling2D, Conv2DTranspose, concatenate
 
 
 def Unet(input_size=(256, 256, 3), batch_size=None, pretrained_weights=None):
 
     inputs = Input(shape=input_size, batch_size=batch_size)
-    conv1 = Conv2D(32, (3, 3), padding='same', activation='relu')(inputs)
+    bnorm1 = BatchNormalization()(inputs)
+    conv1 = Conv2D(32, (3, 3), padding='same', activation='relu')(bnorm1)
     conv1 = Conv2D(32, (3, 3), padding='same', activation='relu')(conv1)
     pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
 
