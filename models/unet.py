@@ -4,7 +4,7 @@ from tensorflow.keras.layers import Input, BatchNormalization, Conv2D, MaxPoolin
 
 def unet(input_size=(256, 256, 3), num_classes=1, pretrained_weights=None):
 
-    inputs = Input(shape=input_size, batch_size=batch_size)
+    inputs = Input(shape=input_size)
     conv1 = Conv2D(32, (3, 3), padding='same', activation='relu')(inputs)
     bnorm1 = BatchNormalization()(conv1)
     conv1 = Conv2D(32, (3, 3), padding='same', activation='relu')(conv1)
@@ -45,13 +45,13 @@ def unet(input_size=(256, 256, 3), num_classes=1, pretrained_weights=None):
                        bnorm3], axis=3)
     conv7 = Conv2D(128, (3, 3), padding='same', activation='relu')(up7)
     bnorm7 = BatchNormalization()(conv7)
-    conv7 = Conv2D(128, (3, 3), padding='same', activation='relu')(conv7)
+    conv7 = Conv2D(128, (3, 3), padding='same', activation='relu')(bnorm7)
     bnorm7 = BatchNormalization()(conv7)
 
     up8 = concatenate([Conv2DTranspose(64, (2, 2), strides=(2, 2), padding='same')(bnorm7),
                        conv2], axis=3)
     conv8 = Conv2D(64, (3, 3), padding='same', activation='relu')(up8)
-    bnorm8 = BatchNormalization(conv8)
+    bnorm8 = BatchNormalization()(conv8)
     conv8 = Conv2D(64, (3, 3), padding='same', activation='relu')(bnorm8)
     bnorm8 = BatchNormalization()(conv8)
 
@@ -59,7 +59,7 @@ def unet(input_size=(256, 256, 3), num_classes=1, pretrained_weights=None):
                        conv1])
     conv9 = Conv2D(32, (3, 3), padding='same', activation='relu')(up9)
     bnorm9 = BatchNormalization()(conv9)
-    conv9 = Conv2D(32, (3, 3), padding='same', activation='relu')(conv9)
+    conv9 = Conv2D(32, (3, 3), padding='same', activation='relu')(bnorm9)
     bnorm9 = BatchNormalization()(conv9)
 
     classify = Conv2D(num_classes, (1, 1), activation='sigmoid')(bnorm9)
