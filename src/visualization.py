@@ -14,6 +14,22 @@ def plot_sample(car, mask):
     plt.show()
 
 
+def smooth(y_arr, points=20):
+    b_point = np.ones(points) / points
+    smooth_y = np.convolve(y_arr, b_point, mode='same')
+    return smooth_y
+
+
+def plot_lr_finder(lrs, losses, points):
+    smooth_losses = smooth(losses, points)
+    plt.figure(figsize=(7, 5))
+    plt.plot(lrs, smooth_losses)
+    plt.xlabel('learning rate')
+    plt.ylable('loss')
+    plt.title('Smoothed Losses after Batch')
+    plt.show()
+
+
 def plot_losses(history):
     fix, ax = plt.subplots(2, 1, figsize=(8, 10))
     ax[0].plot(history['loss'], color='y', label='Training Loss')
