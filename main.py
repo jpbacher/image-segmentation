@@ -66,12 +66,12 @@ def main():
     early_stopping = EarlyStopping(min_delta=0.0005, patience=8, restore_best_weights=True)
     model_check = ModelCheckpoint(Path(checkpoint_dir / 'unet.hdf5'))
     model.compile(optimizer=Adam, loss=[dice_bce_loss], metrics=[dice_coeff])
-    history = model.fit_generator(train_gen,
-                                  steps_per_epoch=int(len(train_ids) / args['batch_size']),
-                                  epochs=args['epochs'],
-                                  validation_data=val_gen,
-                                  validation_steps=int(len(val_ids) / args['batch_size']),
-                                  callbacks=[lr_scheduler, early_stopping, model_check])
+    model.fit_generator(train_gen,
+                        steps_per_epoch=int(len(train_ids) / args['batch_size']),
+                        epochs=args['epochs'],
+                        validation_data=val_gen,
+                        validation_steps=int(len(val_ids) / args['batch_size']),
+                        callbacks=[lr_scheduler, early_stopping, model_check])
 
 
 if __name__ == "__main__":
