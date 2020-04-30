@@ -1,9 +1,8 @@
 import os
 import argparse
 from pathlib import Path
-import numpy as np
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
 
 from project import Project
@@ -16,7 +15,7 @@ from callbacks.learning_rate import SGDRSchedule, step_decay_lr
 def parse_args():
     arg = argparse.ArgumentParser()
     arg.add_argument('-s', '--split', type=float, help='percentage of data used for training')
-    arg.add_argument('-m', '--model', required=True, help='model to train')
+    arg.add_argument('-m', '--model', type=str, help='model to train')
     arg.add_argument('-bs', '--batch_size', type=int, help='batch size')
     arg.add_argument('e', '--epochs', type=int, help='number of epochs')
     arg.add_argument('-is', '--img_size', type=list, help='image size')
@@ -24,11 +23,13 @@ def parse_args():
     args = vars(arg.parse_args())
     return args
 
+
 def main():
     args = parse_args()
     project = Project()
     train_folder = Path(project.data_dir / 'train')
     mask_folder = Path(project.data_dir / 'train_masks')
+    checkpoint_dir = Path('checkpoint')
     train_files = os.listdir(train_folder)
     train_masks = os.listdir(mask_folder)
     train_files_sorted = sorted(train_files)
@@ -62,12 +63,16 @@ def main():
         schedule = ReduceLROnPlateau(factor=0.2, patience=2, min_lr=0.00001)
     else:
         raise ValueError("Must be 'sgdr', 'step_decay', or 'plateau'")
+    early_stopping = EarlyStopping(min_delta=0.0005, patience=8, restore_best_weights=True)
+    model_check = ModelCheckpoint(Path(checkpoint_dir / 'unet.hdf5'))
     model.compile(optimizer=Adam, loss=[dice_bce_loss], metrics=[dice_coeff])
     history = model.fit_generator(train_gen,
                                   steps_per_epoch=int(len(train_ids) / args['batch_size']),
                                   epochs=args['epochs'],
                                   validation_data=val_gen,
                                   validation_steps=int(len(val_ids) / args['batch_size']),
-                                  callbacks=
+                                  callbacks=[lr_scheduler, early_stopping, model_check])
 
 
+if __name__ == "__main__":
+    main()
