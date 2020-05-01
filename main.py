@@ -17,9 +17,9 @@ def parse_args():
     arg.add_argument('-s', '--split', type=float, help='percentage of data used for training')
     arg.add_argument('-m', '--model', type=str, help='model to train')
     arg.add_argument('-bs', '--batch_size', type=int, help='batch size')
-    arg.add_argument('e', '--epochs', type=int, help='number of epochs')
+    arg.add_argument('-e', '--epochs', type=int, help='number of epochs')
     arg.add_argument('-is', '--img_size', type=list, help='image size')
-    arg.add_argument('lrs', '--lr_schedule', type=str, help='learning rate schedule')
+    arg.add_argument('-lrs', '--lr_schedule', type=str, help='learning rate schedule')
     args = vars(arg.parse_args())
     return args
 
