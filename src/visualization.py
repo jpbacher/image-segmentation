@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from src.utils import get_smooth_loss
+
 
 def plot_sample(car, mask):
     fig, ax = plt.subplots(1, 2, figsize=(15, 6))
@@ -14,19 +16,13 @@ def plot_sample(car, mask):
     plt.show()
 
 
-def smooth(y_arr, points=20):
-    b_point = np.ones(points) / points
-    smooth_y = np.convolve(y_arr, b_point, mode='same')
-    return smooth_y
-
-
 def plot_lr_finder(lrs, losses, points):
-    smooth_losses = smooth(losses, points)
+    smooth_losses = get_smooth_loss(losses, points)
     plt.figure(figsize=(7, 5))
     plt.plot(lrs, smooth_losses)
     plt.xlabel('learning rate')
-    plt.ylable('loss')
-    plt.title('Smoothed Losses after Batch')
+    plt.ylabel('loss')
+    plt.title('Smoothed Losses after each Batch')
     plt.show()
 
 
