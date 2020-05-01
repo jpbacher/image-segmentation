@@ -1,2 +1,2 @@
 # image-segmentation
-Semantic segmentation for interpreting images (PyTorch)
+Semantic segmentation for interpreting images (Tensorflow/Keras)
